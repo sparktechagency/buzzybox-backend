@@ -1,11 +1,8 @@
 import { Request, Response } from 'express';
 import stripe from '../app/config/stripe.config';
 import config from '../config';
-import { GiftCard } from '../app/modules/giftcard/gift-card.model';
 import Stripe from 'stripe';
-import { emailTemplate } from '../shared/emailTemplate';
-import { emailHelper } from '../helpers/emailHelper';
-import schedule from 'node-schedule';
+import { Payment } from '../app/modules/payment/payment.model';
 
 const handleStripeWebhook = async (req: Request, res: Response) => {
       const signature = req.headers['stripe-signature'];
@@ -17,57 +14,10 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
 
             switch (event.type) {
                   case 'checkout.session.completed':
-                        const session = event.data?.object;
-
-                        const giftCard = await GiftCard.findOne({ paymentIntentId: session.id });
-                        if (!giftCard) {
-                              console.log('Gift card not found');
-                              return;
-                        }
-                        giftCard.paymentStatus = 'paid';
-
-                        let emailScheduleDate = new Date(giftCard.receiverInfo!.emailScheduleDate as Date);
-                        if (emailScheduleDate < new Date()) {
-                              console.warn('Email schedule date is in the past. Sending immediately.');
-                              emailScheduleDate = new Date(new Date().getTime() + 1 * 60 * 1000); // Send in 1 min if past
-                        }
-
-                        const receiverScheduleEmail = emailTemplate.sendGiftCardEmail({
-                              email: giftCard.receiverInfo!.receiverEmail as string,
-                              name: giftCard.coverPage.senderName,
-                              giftCardUrl: giftCard.receiverInfo!.url as string,
-                              message: giftCard.receiverInfo!.message as string,
-                        });
-
-                        schedule.scheduleJob(emailScheduleDate, async () => {
-                              try {
-                                    await emailHelper.sendEmail(receiverScheduleEmail);
-                                    giftCard.status = 'sent';
-                                    await giftCard.save();
-                                    console.log('Scheduled email sent successfully');
-                              } catch (emailError) {
-                                    console.error('Error sending scheduled email:', emailError);
-                              }
-                        });
-
-                        await giftCard.save();
-                        console.log('Gift card status updated successfully');
+                        await handlePaymentSuccess(event.data.object as Stripe.Checkout.Session);
                         break;
 
                   case 'payment_intent.payment_failed':
-                        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-                        console.log(paymentIntent, 'paymentIntent');
-
-                        const giftCardFailed = await GiftCard.findOne({ paymentIntentId: paymentIntent.id });
-
-                        if (!giftCardFailed) {
-                              console.log('Gift card not found');
-                              return;
-                        }
-
-                        await giftCardFailed.deleteOne();
-                        console.log('Gift card deleted due to failed payment');
-                        break;
 
                   default:
                         console.log(`Unhandled event type: ${event.type}`);
@@ -81,3 +31,41 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
 };
 
 export default handleStripeWebhook;
+
+const handlePaymentSuccess = async (session: Stripe.Checkout.Session) => {
+      const { metadata } = session;
+
+      if (metadata?.paymentType === 'giftCard') {
+            await Payment.create({
+                  userId: metadata?.userId,
+                  giftCardId: metadata?.giftCardId,
+                  paymentIntentId: session.payment_intent as string,
+                  amount: (session.amount_total! / 100) as number,
+                  transactionId: session.id,
+                  status: 'paid',
+            });
+      }
+
+      if (metadata?.paymentType === 'contribution') {
+            const addedContributionAmount = await Payment.findOneAndUpdate(
+                  {
+                        giftCardId: metadata?.giftCardId,
+                  },
+                  {
+                        $inc: {
+                              totalContribution: metadata?.amount,
+                        },
+                        $push: {
+                              contributors: {
+                                    email: metadata?.contributorEmail,
+                                    amount: metadata?.amount,
+                              },
+                        },
+                  },
+                  {
+                        new: true,
+                        upsert: true,
+                  }
+            );
+      }
+};

@@ -6,6 +6,7 @@ import config from './config';
 import { socketHelper } from './helpers/socketHelper';
 import { errorLogger, logger } from './shared/logger';
 import seedSuperAdmin from './app/DB';
+import { scheduleDailyGiftCardCheck } from './helpers/cronSchedule';
 
 //uncaught exception
 process.on('uncaughtException', (error) => {
@@ -19,6 +20,7 @@ async function main() {
             //database
             mongoose.connect(config.database_url as string);
             logger.info(colors.bgCyan('🚀 Database connected successfully'));
+            scheduleDailyGiftCardCheck();
             seedSuperAdmin();
 
             const port = typeof config.port === 'number' ? config.port : Number(config.port);

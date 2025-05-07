@@ -1,29 +1,40 @@
-import { emailHelper } from '../../../helpers/emailHelper';
-import { emailTemplate } from '../../../shared/emailTemplate';
+import config from '../../../config';
 import { Category } from '../category/category.model';
 
 import { IGiftCard } from './gift-card.interface';
 import { GiftCard } from './gift-card.model';
 import mongoose from 'mongoose';
-import cron from 'node-cron';
 
 const createGiftCardToDB = async (payload: IGiftCard, userId: string) => {
+      const session = await mongoose.startSession();
+      session.startTransaction();
       try {
-            const category = await Category.findById(payload.category);
+            const category = await Category.findById(payload.category).session(session);
             if (!category) {
                   throw new Error('Category not found');
             }
-
             payload.userId = new mongoose.Types.ObjectId(userId);
             payload.image = category.occasionImage;
-            payload.price = 5; // static price
-            const result = await GiftCard.create(payload);
-            if (!result) {
+            payload.price = 5;
+
+            const result = await GiftCard.create([payload], { session });
+
+            //receiver url
+            const receiverUrl = `${config.frontend_url}/gift-card/${result[0].uniqueId}`;
+
+            await GiftCard.findByIdAndUpdate(result[0]._id, { $set: { 'receiverInfo.url': receiverUrl } }, { new: true, session });
+
+            if (!result[0]) {
                   throw new Error('Failed to create gift card');
             }
-            return result;
+
+            await session.commitTransaction();
+            session.endSession();
+            return result[0];
       } catch (error) {
-            throw new Error(`Error creating payment link: ${(error as Error).message}`);
+            await session.abortTransaction();
+            session.endSession();
+            throw new Error(`${(error as Error).message}`);
       }
 };
 

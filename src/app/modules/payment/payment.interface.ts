@@ -11,4 +11,7 @@ export type IPayment = {
       amount: number;
       contributors: IContributor[];
       totalContribution: number;
+      hasWithdrawn: boolean;
+      claimToken?: string;
+      stripeConnectAccountId?: string;
 };

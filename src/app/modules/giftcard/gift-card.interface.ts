@@ -24,6 +24,6 @@ export interface IGiftCard {
             senderName: string;
       };
       pages?: IPage[];
-      status: 'pending' | 'sent' | 'expired';
+      status: 'pending' | 'sent' | 'failed';
       paymentStatus: 'pending' | 'paid' | 'failed';
 }

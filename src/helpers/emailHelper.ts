@@ -22,9 +22,18 @@ const sendEmail = async (values: ISendEmail) => {
                   html: values.html,
             });
 
-            logger.info('Mail send successfully', info.accepted);
+            logger.info('Mail sent successfully', { 
+                  to: values.to, 
+                  messageId: info.messageId,
+                  accepted: info.accepted 
+            });
+            return { success: true, messageId: info.messageId };
       } catch (error) {
-            errorLogger.error('Email', error);
+            errorLogger.error('Failed to send email', { 
+                  to: values.to,
+                  error: error instanceof Error ? error.message : 'Unknown error'
+            });
+            return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
       }
 };
 

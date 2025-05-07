@@ -10,12 +10,9 @@ const giftCardSchema = new Schema<IGiftCard>(
             category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
             image: { type: String, required: true },
             price: { type: Number },
-            paymentIntentId: { type: String },
-
             receiverInfo: {
-                  receiverEmail: { type: String },
-                  emailScheduleDate: { type: Date },
-                  message: { type: String },
+                  receiverEmail: { type: String, required: true },
+                  emailScheduleDate: { type: Date, required: true },
                   url: { type: String },
             },
 
@@ -32,7 +29,7 @@ const giftCardSchema = new Schema<IGiftCard>(
                         senderName: { type: String },
                   },
             ],
-            status: { type: String, enum: ['pending', 'sent', 'expired'], default: 'pending' },
+            status: { type: String, enum: ['pending', 'sent', 'failed'], default: 'pending' },
             paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
       },
       {

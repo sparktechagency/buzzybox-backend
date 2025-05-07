@@ -8,7 +8,7 @@ const paymentSchema = new Schema<IPayment>(
                   required: true,
                   ref: 'User',
             },
-
+            stripeConnectAccountId: { type: String, default: null },
             giftCardId: {
                   type: Schema.Types.ObjectId,
                   required: true,
@@ -38,10 +38,15 @@ const paymentSchema = new Schema<IPayment>(
                         },
                   },
             ],
+            hasWithdrawn: {
+                  type: Boolean,
+                  default: false,
+            },
             totalContribution: {
                   type: Number,
                   default: 0,
             },
+            claimToken: { type: String, unique: true },
       },
       {
             timestamps: true,

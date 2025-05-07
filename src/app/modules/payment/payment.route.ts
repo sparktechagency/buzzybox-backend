@@ -5,5 +5,6 @@ import { PaymentController } from './payment.controller';
 const router = Router();
 router.post('/create-checkout-session', auth(USER_ROLES.USER), PaymentController.createCheckoutSession);
 router.post('/give-contribution', PaymentController.giveContribution);
-router.get('/all-transactions', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), PaymentController.getAllTransactions);
+router.post('/connect-account', PaymentController.connectAccount);
+router.post('/withdraw-funds', PaymentController.withdrawContributionMoney);
 export const PaymentRoutes = router;

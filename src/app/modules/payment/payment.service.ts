@@ -2,6 +2,8 @@ import stripe from '../../config/stripe.config';
 import { GiftCard } from '../giftcard/gift-card.model';
 import config from '../../../config';
 import { ObjectId } from 'mongoose';
+import { Payment } from './payment.model';
+import { IPayment } from './payment.interface';
 
 const createCheckoutSession = async (userId: string, giftCardId: ObjectId) => {
       if (!giftCardId) {
@@ -66,86 +68,90 @@ const createContributionSession = async (payload: { giftCardId: ObjectId; amount
 
       return session.url;
 };
-const getAllTransactionsFromDB = async (query: Record<string, any>) => {
-      const page = Number(query.page) || 1;
-      const limit = Number(query.limit) || 10;
-      const skip = (page - 1) * limit;
-      const sortBy = query.sortBy || 'user.name';
-      const sortOrder = query.sortOrder === 'desc' ? -1 : 1;
-      const regexSearchTerm = typeof query.searchTerm === 'string' ? query.searchTerm : '';
-      const result = await GiftCard.aggregate([
-            {
-                  $lookup: {
-                        from: 'users',
-                        localField: 'userId',
-                        foreignField: '_id',
-                        as: 'user',
-                  },
-            },
-            {
-                  $unwind: '$user',
-            },
-            {
-                  $match: {
-                        $or: [
-                              { 'user.name': { $regex: regexSearchTerm, $options: 'i' } },
-                              { 'user.email': { $regex: regexSearchTerm, $options: 'i' } },
-                        ],
-                  },
-            },
 
-            {
-                  $project: {
-                        _id: 1,
-                        user: {
-                              _id: 1,
-                              name: 1,
-                              email: 1,
-                              profile: 1,
-                              status: 1,
-                              contact: 1,
-                        },
-                        giftCardId: 1,
-                        paymentIntentId: 1,
-                        amount: 1,
-                        price: 1,
-                        paymentStatus: 1,
-                        coverPage: 1,
-                  },
-            },
-
-            {
-                  $facet: {
-                        metadata: [{ $count: 'total' }, { $addFields: { page, limit } }],
-                        data: [{ $sort: { [sortBy]: sortOrder } }, { $skip: skip }, { $limit: limit }],
-                  },
-            },
-            { $unwind: '$metadata' },
-            {
-                  $project: {
-                        data: 1,
-                        meta: {
-                              page: '$metadata.page',
-                              limit: '$metadata.limit',
-                              total: '$metadata.total',
-                              totalPage: { $ceil: { $divide: ['$metadata.total', '$metadata.limit'] } },
-                        },
-                  },
-            },
-      ]).exec();
-
-      if (!result) {
-            return {
-                  meta: {
-                        page,
-                        limit,
-                        total: 0,
-                        totalPage: 0,
-                  },
-                  data: [],
-            };
+const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; email: string }) => {
+      if (!payload.giftCardId) {
+            throw new Error('Gift card ID is required');
       }
 
-      return result;
+      const giftCard = await GiftCard.findById(payload.giftCardId);
+      if (!giftCard) {
+            throw new Error('Gift card not found');
+      }
+
+      // Find or create a related payment record
+      let payment = await Payment.findOne({ giftCardId: payload.giftCardId });
+
+      if (!payment) {
+            payment = new Payment({ giftCardId: payload.giftCardId });
+      }
+
+      // Check if Stripe Connect account is already saved
+      let accountId = payment.stripeConnectAccountId;
+
+      if (!accountId) {
+            const account = await stripe.accounts.create({
+                  type: 'express',
+                  country: 'US',
+                  email: payload.email,
+                  capabilities: {
+                        transfers: { requested: true },
+                  },
+            });
+
+            accountId = account.id;
+            payment.stripeConnectAccountId = accountId;
+
+            await payment.save();
+      }
+
+      // Generate Stripe onboarding link
+      const accountLink = await stripe.accountLinks.create({
+            account: accountId,
+            refresh_url: `${config.frontend_url}/gift-card/${payload.giftCardId}`,
+            return_url: `${config.frontend_url}/withdraw-success?giftCardId=${payload.giftCardId}`,
+            type: 'account_onboarding',
+      });
+
+      return accountLink.url;
 };
-export const PaymentService = { createCheckoutSession, getAllTransactionsFromDB, createContributionSession };
+
+const withdrawGiftCardFunds = async (payload: IPayment) => {
+      if (!payload.giftCardId) {
+            throw new Error('Gift card ID is required');
+      }
+
+      const payment = await Payment.findOne({ giftCardId: payload.giftCardId });
+      if (!payment) {
+            throw new Error('Payment record not found');
+      }
+
+      if (!payment.stripeConnectAccountId) {
+            throw new Error('Recipient is not connected to Stripe');
+      }
+
+      if (payment.hasWithdrawn) {
+            throw new Error('Funds already withdrawn');
+      }
+
+      if (!payment.totalContribution || payment.totalContribution <= 0) {
+            throw new Error('No funds available to withdraw');
+      }
+
+      const transfer = await stripe.transfers.create({
+            amount: Math.floor(payment.totalContribution * 100), // in cents
+            currency: 'usd',
+            destination: payment.stripeConnectAccountId,
+            metadata: {
+                  giftCardId: payload.giftCardId.toString(),
+                  type: 'gift_card_withdrawal',
+            },
+      });
+
+      // Mark as withdrawn
+      payment.hasWithdrawn = true;
+
+      await payment.save();
+};
+
+export const PaymentService = { createCheckoutSession, createContributionSession, createRecipientWithdrawalLink, withdrawGiftCardFunds };

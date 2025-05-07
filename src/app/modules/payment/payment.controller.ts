@@ -22,13 +22,25 @@ const giveContribution = catchAsync(async (req, res) => {
             data: result,
       });
 });
-const getAllTransactions = catchAsync(async (req, res) => {
-      const result = await PaymentService.getAllTransactionsFromDB(req.query);
+
+const connectAccount = catchAsync(async (req, res) => {
+      const result = await PaymentService.createRecipientWithdrawalLink(req.body);
       sendResponse(res, {
             success: true,
             statusCode: 200,
-            message: 'Transactions retrieved successfully',
+            message: 'Account connected successfully',
             data: result,
       });
 });
-export const PaymentController = { createCheckoutSession, giveContribution, getAllTransactions };
+
+const withdrawContributionMoney = catchAsync(async (req, res) => {
+      const result = await PaymentService.withdrawGiftCardFunds(req.body);
+      sendResponse(res, {
+            success: true,
+            statusCode: 200,
+            message: ' Withdraw money successfully',
+            data: result,
+      });
+});
+
+export const PaymentController = { createCheckoutSession, giveContribution, connectAccount, withdrawContributionMoney };

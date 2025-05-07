@@ -3,6 +3,7 @@ import stripe from '../app/config/stripe.config';
 import config from '../config';
 import Stripe from 'stripe';
 import { Payment } from '../app/modules/payment/payment.model';
+import { randomUUID } from 'crypto';
 
 const handleStripeWebhook = async (req: Request, res: Response) => {
       const signature = req.headers['stripe-signature'];
@@ -36,6 +37,7 @@ const handlePaymentSuccess = async (session: Stripe.Checkout.Session) => {
       const { metadata } = session;
 
       if (metadata?.paymentType === 'giftCard') {
+            const claimToken = randomUUID();
             await Payment.create({
                   userId: metadata?.userId,
                   giftCardId: metadata?.giftCardId,
@@ -43,6 +45,7 @@ const handlePaymentSuccess = async (session: Stripe.Checkout.Session) => {
                   amount: (session.amount_total! / 100) as number,
                   transactionId: session.id,
                   status: 'paid',
+                  claimToken,
             });
       }
 

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { PaymentService } from './payment.service';
@@ -43,4 +44,19 @@ const withdrawContributionMoney = catchAsync(async (req, res) => {
       });
 });
 
-export const PaymentController = { createCheckoutSession, giveContribution, connectAccount, withdrawContributionMoney };
+const getPaymentByGiftCardId = catchAsync(async (req, res) => {
+      const result = await PaymentService.getPaymentByGiftCardId(req.params.id as unknown as ObjectId);
+      sendResponse(res, {
+            success: true,
+            statusCode: 200,
+            message: 'Payment record retrieved successfully',
+            data: result,
+      });
+});
+export const PaymentController = {
+      createCheckoutSession,
+      giveContribution,
+      connectAccount,
+      withdrawContributionMoney,
+      getPaymentByGiftCardId,
+};

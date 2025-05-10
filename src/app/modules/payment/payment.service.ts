@@ -17,7 +17,7 @@ const createCheckoutSession = async (userId: string, giftCardId: ObjectId) => {
       const checkoutSession = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'payment',
-            success_url: `${config.frontend_url}`,
+            success_url: `${config.frontend_url}/create-gift/${giftCard.uniqueId}`,
             cancel_url: `${config.frontend_url}`,
             line_items: [
                   {
@@ -55,8 +55,8 @@ const createContributionSession = async (payload: { giftCardId: ObjectId; amount
       const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'payment',
-            success_url: `${config.frontend_url}/contribution-success`,
-            cancel_url: `${config.frontend_url}/gift-card/${payload.giftCardId}`,
+            success_url: `${config.frontend_url}/create-gift/${giftCard.uniqueId}`,
+            cancel_url: `${config.frontend_url}/create-gift/${giftCard.uniqueId}`,
             line_items: [{ price: price.id, quantity: 1 }],
             metadata: {
                   giftCardId: payload.giftCardId.toString(),
@@ -108,8 +108,8 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
       // Generate Stripe onboarding link
       const accountLink = await stripe.accountLinks.create({
             account: accountId,
-            refresh_url: `${config.frontend_url}/gift-card/${payload.giftCardId}`,
-            return_url: `${config.frontend_url}/withdraw-success?giftCardId=${payload.giftCardId}`,
+            refresh_url: `${config.frontend_url}/preview-gift/${giftCard.uniqueId}`,
+            return_url: `${config.frontend_url}/preview-gift/${giftCard.uniqueId}`,
             type: 'account_onboarding',
       });
 
@@ -126,8 +126,12 @@ const withdrawGiftCardFunds = async (payload: IPayment) => {
             throw new Error('Payment record not found');
       }
 
+      console.log(payment, 'from withdrawel');
       if (!payment.stripeConnectAccountId) {
-            throw new Error('Recipient is not connected to Stripe');
+            const connectAccountUrl = `${config.frontend_url}/connect/${payload.giftCardId}`;
+            return {
+                  connectAccountUrl,
+            };
       }
 
       if (payment.hasWithdrawn) {
@@ -154,4 +158,18 @@ const withdrawGiftCardFunds = async (payload: IPayment) => {
       await payment.save();
 };
 
-export const PaymentService = { createCheckoutSession, createContributionSession, createRecipientWithdrawalLink, withdrawGiftCardFunds };
+const getPaymentByGiftCardId = async (giftCardId: ObjectId) => {
+      const payment = await Payment.findOne({ giftCardId: giftCardId });
+      if (!payment) {
+            throw new Error('Payment record not found');
+      }
+      return payment;
+};
+
+export const PaymentService = {
+      createCheckoutSession,
+      createContributionSession,
+      createRecipientWithdrawalLink,
+      withdrawGiftCardFunds,
+      getPaymentByGiftCardId,
+};

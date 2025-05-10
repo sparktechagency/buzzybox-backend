@@ -20,7 +20,7 @@ const createGiftCardToDB = async (payload: IGiftCard, userId: string) => {
             const result = await GiftCard.create([payload], { session });
 
             //receiver url
-            const receiverUrl = `${config.frontend_url}/gift-card/${result[0].uniqueId}`;
+            const receiverUrl = `${config.frontend_url}/preview-gift/${result[0].uniqueId}`;
 
             await GiftCard.findByIdAndUpdate(result[0]._id, { $set: { 'receiverInfo.url': receiverUrl } }, { new: true, session });
 

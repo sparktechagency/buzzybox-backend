@@ -4,6 +4,7 @@ import config from '../config';
 import Stripe from 'stripe';
 import { Payment } from '../app/modules/payment/payment.model';
 import { randomUUID } from 'crypto';
+import { GiftCard } from '../app/modules/giftcard/gift-card.model';
 
 const handleStripeWebhook = async (req: Request, res: Response) => {
       const signature = req.headers['stripe-signature'];
@@ -46,6 +47,12 @@ const handlePaymentSuccess = async (session: Stripe.Checkout.Session) => {
                   transactionId: session.id,
                   status: 'paid',
                   claimToken,
+            });
+
+            await GiftCard.findByIdAndUpdate(metadata?.giftCardId, {
+                  $set: {
+                        paymentStatus: 'paid',
+                  },
             });
       }
 

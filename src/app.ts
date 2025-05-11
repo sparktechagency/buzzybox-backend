@@ -1,5 +1,5 @@
 import cors from 'cors';
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import cookieParser from 'cookie-parser';
@@ -13,7 +13,7 @@ const app = express();
 app.post('/api/v1/stripe/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
 app.use(
       cors({
-            origin: ['http://10.0.70.128:3004', 'http://localhost:3000', 'http://10.0.80.47:3003', 'http://10.0.70.128:3002'],
+            origin: ['http://10.0.80.47:3002', 'http://10.0.80.47:3003'],
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
             allowedHeaders: ['Content-Type', 'Authorization'],

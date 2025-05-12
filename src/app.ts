@@ -13,7 +13,7 @@ const app = express();
 app.post('/api/v1/stripe/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
 app.use(
       cors({
-            origin: ['http://10.0.80.47:3002', 'http://10.0.80.47:3003'],
+            origin: ['http://10.0.80.47:3000', 'http://10.0.80.47:3002', 'http://10.0.80.47:3003', 'https://rahat3000.binarybards.online'],
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
             allowedHeaders: ['Content-Type', 'Authorization'],

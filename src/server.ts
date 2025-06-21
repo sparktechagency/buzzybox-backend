@@ -11,6 +11,7 @@ import { scheduleDailyGiftCardCheck } from './helpers/cronSchedule';
 //uncaught exception
 process.on('uncaughtException', (error) => {
       errorLogger.error('UnhandleException Detected', error);
+      console.log('uncaughtException Error:', error);
       process.exit(1);
 });
 
@@ -41,6 +42,7 @@ async function main() {
             global.io = io;
       } catch (error) {
             errorLogger.error(colors.red('🤢 Failed to connect Database'));
+            console.log('Error to connect Database:', error);
       }
 
       //handle unhandleRejection

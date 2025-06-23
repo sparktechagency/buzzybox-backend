@@ -6,14 +6,19 @@ import fileUploadHandler from '../../middlewares/fileUploadHandler';
 
 const router = express.Router();
 
-router.post('/create-how-it-works', auth(USER_ROLES.ADMIN), fileUploadHandler(), HowItWorksController.createHowItWorks);
+router.post(
+      '/create-how-it-works',
+      auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+      fileUploadHandler(),
+      HowItWorksController.createHowItWorks
+);
 
-router.patch('/:id', auth(USER_ROLES.ADMIN), fileUploadHandler(), HowItWorksController.updateHowItWorks);
+router.patch('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), fileUploadHandler(), HowItWorksController.updateHowItWorks);
 
 router.get('/', HowItWorksController.getAllHowItWorks);
 router.get('/active', HowItWorksController.getActiveHowItWorks);
 router.get('/:id', HowItWorksController.getHowItWorksById);
 
-router.delete('/:id', auth(USER_ROLES.ADMIN), HowItWorksController.deleteHowItWorks);
+router.delete('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), HowItWorksController.deleteHowItWorks);
 
 export const HowItWorksRoutes = router;

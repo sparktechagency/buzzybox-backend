@@ -10,7 +10,8 @@ const app = express();
 
 //morgan
 
-app.post('/api/v1/stripe/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
+app.use('/api/v1/stripe/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
+
 app.use(
       cors({
             origin: ['http://217.154.124.214:3000', 'http://217.154.124.214:4173'],

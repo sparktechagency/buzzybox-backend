@@ -60,6 +60,6 @@ async function sendEmail(giftCardId: ObjectId) {
 }
 
 export function scheduleDailyGiftCardCheck() {
-      // cron.schedule('0 0 * * *', checkAndSendGiftCards);
-      cron.schedule('*/5 * * * *', checkAndSendGiftCards);
+      cron.schedule('0 0 * * *', checkAndSendGiftCards);
+      // cron.schedule('*/5 * * * *', checkAndSendGiftCards);
 }

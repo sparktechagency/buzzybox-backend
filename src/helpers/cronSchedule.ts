@@ -7,11 +7,10 @@ import { IPayment } from '../app/modules/payment/payment.interface';
 import { ObjectId } from 'mongoose';
 
 export async function checkAndSendGiftCards() {
-      console.log('Checking gift cards...');
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const now = new Date();
+      const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
       const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
 
       const cardNeedToSend = await Payment.aggregate([
             {
@@ -46,7 +45,6 @@ export async function checkAndSendGiftCards() {
 async function sendEmail(giftCardId: ObjectId) {
       const giftCard = await GiftCard.findOne({ _id: giftCardId, status: { $ne: 'sent' } });
 
-      console.log('need to send', giftCard);
       if (!giftCard) {
             return;
       }
@@ -62,5 +60,6 @@ async function sendEmail(giftCardId: ObjectId) {
 }
 
 export function scheduleDailyGiftCardCheck() {
-      cron.schedule('0 0 * * *', checkAndSendGiftCards);
+      // cron.schedule('0 0 * * *', checkAndSendGiftCards);
+      cron.schedule('*/5 * * * *', checkAndSendGiftCards);
 }

@@ -7,6 +7,7 @@ import { IPayment } from '../app/modules/payment/payment.interface';
 import { ObjectId } from 'mongoose';
 
 export async function checkAndSendGiftCards() {
+      console.log('Cron job is running');
       const now = new Date();
       const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
       const tomorrow = new Date(today);
@@ -39,6 +40,7 @@ export async function checkAndSendGiftCards() {
 
       cardNeedToSend.forEach((payment: IPayment) => {
             sendEmail(payment.giftCardId);
+            console.log('Email sent for gift card');
       });
 }
 
@@ -60,6 +62,6 @@ async function sendEmail(giftCardId: ObjectId) {
 }
 
 export function scheduleDailyGiftCardCheck() {
-      cron.schedule('0 0 * * *', checkAndSendGiftCards);
-      // cron.schedule('*/5 * * * *', checkAndSendGiftCards);
+      // cron.schedule('0 0 * * *', checkAndSendGiftCards);
+      cron.schedule('*/5 * * * *', checkAndSendGiftCards);
 }

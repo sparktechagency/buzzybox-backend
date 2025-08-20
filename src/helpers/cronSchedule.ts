@@ -38,6 +38,8 @@ export async function checkAndSendGiftCards() {
             },
       ]);
 
+      console.log('Card needs to send', cardNeedToSend.length);
+
       cardNeedToSend.forEach((payment: IPayment) => {
             sendEmail(payment.giftCardId);
             console.log('Email sent for gift card');

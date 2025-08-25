@@ -5,7 +5,7 @@ import { PaymentService } from './payment.service';
 
 // checkout
 const createCheckoutSession = catchAsync(async (req, res) => {
-      const result = await PaymentService.createCheckoutSession(req.user!.id, req.body.giftCardId);
+      const result = await PaymentService.createCheckoutSession(req.body.giftCardId);
       sendResponse(res, {
             success: true,
             statusCode: 200,

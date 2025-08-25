@@ -3,12 +3,10 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { Request, Response } from 'express';
 import { InviteService } from './invite.service';
-import { JwtPayload } from 'jsonwebtoken';
 
 const sendInvite = catchAsync(async (req: Request, res: Response) => {
       const { ...inviteData } = req.body;
-      const id = req.user?.id;
-      const result = await InviteService.sendInvite(id as string, inviteData);
+      const result = await InviteService.sendInvite(inviteData);
 
       sendResponse(res, {
             success: true,

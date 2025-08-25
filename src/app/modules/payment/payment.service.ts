@@ -5,7 +5,7 @@ import { ObjectId } from 'mongoose';
 import { Payment } from './payment.model';
 import { IPayment } from './payment.interface';
 
-const createCheckoutSession = async (userId: string, giftCardId: ObjectId) => {
+const createCheckoutSession = async (giftCardId: ObjectId) => {
       if (!giftCardId) {
             throw new Error('Please provide a valid gift card id');
       }
@@ -26,7 +26,6 @@ const createCheckoutSession = async (userId: string, giftCardId: ObjectId) => {
                   },
             ],
             metadata: {
-                  userId,
                   giftCardId: giftCardId.toString(),
                   paymentType: 'giftCard',
             },

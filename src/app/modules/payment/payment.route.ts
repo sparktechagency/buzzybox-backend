@@ -1,10 +1,8 @@
 import { Router } from 'express';
-import auth from '../../middlewares/auth';
-import { USER_ROLES } from '../../../enums/user';
 import { PaymentController } from './payment.controller';
 const router = Router();
 router.get('/:id', PaymentController.getPaymentByGiftCardId);
-router.post('/create-checkout-session', auth(USER_ROLES.USER), PaymentController.createCheckoutSession);
+router.post('/create-checkout-session', PaymentController.createCheckoutSession);
 router.post('/give-contribution', PaymentController.giveContribution);
 router.post('/connect-account', PaymentController.connectAccount);
 router.post('/withdraw-funds', PaymentController.withdrawContributionMoney);

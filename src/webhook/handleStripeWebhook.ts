@@ -13,7 +13,6 @@ const handlePaymentSuccess = async (session: Stripe.Checkout.Session) => {
 
       if (metadata?.paymentType === 'giftCard') {
             const claimToken = randomUUID();
-            console.log('before create payment webhook');
             await Payment.create({
                   // userId: metadata?.userId,
                   giftCardId: metadata?.giftCardId,
@@ -23,14 +22,12 @@ const handlePaymentSuccess = async (session: Stripe.Checkout.Session) => {
                   status: 'paid',
                   claimToken,
             });
-            console.log('after create payment webhook');
 
             await GiftCard.findByIdAndUpdate(metadata?.giftCardId, {
                   $set: {
                         paymentStatus: 'paid',
                   },
             });
-            console.log('after update gift card webhook');
       }
 
       if (metadata?.paymentType === 'contribution') {

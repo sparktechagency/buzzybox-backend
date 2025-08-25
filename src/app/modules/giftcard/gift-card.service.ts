@@ -5,7 +5,7 @@ import { IGiftCard } from './gift-card.interface';
 import { GiftCard } from './gift-card.model';
 import mongoose from 'mongoose';
 
-const createGiftCardToDB = async (payload: IGiftCard, userId: string) => {
+const createGiftCardToDB = async (payload: IGiftCard) => {
       const session = await mongoose.startSession();
       session.startTransaction();
       try {
@@ -13,7 +13,6 @@ const createGiftCardToDB = async (payload: IGiftCard, userId: string) => {
             if (!category) {
                   throw new Error('Category not found');
             }
-            payload.userId = new mongoose.Types.ObjectId(userId);
             payload.image = category.occasionImage;
             payload.price = 5;
 

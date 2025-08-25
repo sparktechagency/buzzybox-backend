@@ -4,8 +4,7 @@ import { GiftCardService } from './gift-card.service';
 
 const createGiftCard = catchAsync(async (req, res) => {
       const payload = req.body;
-      const userId = req.user?.id;
-      const result = await GiftCardService.createGiftCardToDB(payload, userId as string);
+      const result = await GiftCardService.createGiftCardToDB(payload);
       sendResponse(res, {
             statusCode: 200,
             success: true,
@@ -94,7 +93,6 @@ export const GiftCardController = {
       getAllGiftCards,
       updateGiftCard,
       removePage,
-
       getMyGiftCards,
       getGiftCardByUniqueId,
       deleteGiftCard,

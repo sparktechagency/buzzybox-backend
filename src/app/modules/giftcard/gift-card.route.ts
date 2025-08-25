@@ -6,7 +6,7 @@ import fileUploadHandler from '../../middlewares/fileUploadHandler';
 
 const router = Router();
 
-router.post('/create-gift-card', auth(USER_ROLES.USER), GiftCardController.createGiftCard);
+router.post('/create-gift-card', GiftCardController.createGiftCard);
 router.patch('/add-new-page/:id', fileUploadHandler(), GiftCardController.updateGiftCard);
 router.patch('/remove-page/:id', GiftCardController.removePage);
 router.get('/count-gift-cards', auth(USER_ROLES.ADMIN), GiftCardController.countGiftCards);

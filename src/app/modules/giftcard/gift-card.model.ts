@@ -6,7 +6,6 @@ import ApiError from '../../../errors/ApiError';
 const giftCardSchema = new Schema<IGiftCard>(
       {
             uniqueId: { type: String, required: true, unique: true },
-            userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
             category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
             image: { type: String, required: true },
             price: { type: Number },

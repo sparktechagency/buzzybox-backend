@@ -7,7 +7,6 @@ interface IPage {
 
 export interface IGiftCard {
       uniqueId: string;
-      userId: Types.ObjectId;
       category: Types.ObjectId;
       image: string;
       price?: number;

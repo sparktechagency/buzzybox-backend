@@ -4,7 +4,7 @@ type IContributor = {
       email: string;
 };
 export type IPayment = {
-      userId: ObjectId;
+      // userId: ObjectId;
       giftCardId: ObjectId;
       transactionId: string;
       status: 'pending' | 'success' | 'failed';

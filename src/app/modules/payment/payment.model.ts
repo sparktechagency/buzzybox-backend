@@ -3,11 +3,11 @@ import { IPayment } from './payment.interface';
 
 const paymentSchema = new Schema<IPayment>(
       {
-            userId: {
-                  type: Schema.Types.ObjectId,
-                  required: true,
-                  ref: 'User',
-            },
+            // userId: {
+            //       type: Schema.Types.ObjectId,
+            //       required: true,
+            //       ref: 'User',
+            // },
             stripeConnectAccountId: { type: String, default: null },
             giftCardId: {
                   type: Schema.Types.ObjectId,

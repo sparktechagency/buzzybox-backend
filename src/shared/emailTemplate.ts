@@ -102,7 +102,7 @@ const invite = (values: { email: string; name: string; message: string; link: st
             <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">You’ve been invited by <strong>BuzzyBox</strong> to add a message to <strong>${values.email}</strong> BuzzyBox.</p>
             <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">A BuzzyBox is a digital card created by lots of lovely people for one lucky person. Make your message stand out by adding photos and GIFs too!</p>
             <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">BuzzyBox has included a personal message below:</p>
-            <div style="background-color: #f1f1f1; width: 80%; max-width: 400px; padding: 12px 20px; text-align: center; border-radius: 8px; font-size: 16px; margin: 20px auto; color: #333;">${values.message}</div>
+            <div style="background-color: #f1f1f1; width: 80%; max-width: 400px; padding: 12px 20px; text-align: center; border-radius: 8px; font-size: 16px; margin: 20px auto; color: #333;">${values.message || ""}</div>
             <a href="${values.link}" style="display: inline-block; background-color: #00c853; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Add your message</a>
           </div>
           <p style="color: #555; font-size: 16px; line-height: 1.5; margin-top: 20px; text-align: center;">Once your BuzzyBox is ready, we will send it to them, and you’ll know you’ve contributed to making their day a little brighter! 🌟</p>

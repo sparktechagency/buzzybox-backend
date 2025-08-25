@@ -89,16 +89,6 @@ const getAllGiftCardsFromDB = async (): Promise<IGiftCard[]> => {
       return result;
 };
 
-const getMyGiftCardsFromDB = async (userId: string) => {
-      console.log(userId);
-      const result = await GiftCard.find({ userId, paymentStatus: 'paid' });
-
-      if (!result) {
-            throw new Error('Failed to get my gift cards');
-      }
-      return result;
-};
-
 const deleteGiftCardFromDB = async (id: string) => {
       const result = await GiftCard.findByIdAndDelete(id);
       if (!result) {
@@ -203,7 +193,6 @@ export const GiftCardService = {
       getAllGiftCardsFromDB,
       updateGiftCardToDB,
       removePageFromGiftCard,
-      getMyGiftCardsFromDB,
       getGiftCardByUniqueId,
       deleteGiftCardFromDB,
       countGiftCardsByUserFromDB,

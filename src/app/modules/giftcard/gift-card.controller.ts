@@ -55,17 +55,6 @@ const getAllGiftCards = catchAsync(async (req, res) => {
       });
 });
 
-const getMyGiftCards = catchAsync(async (req, res) => {
-      const userId = req.user?.id;
-      const result = await GiftCardService.getMyGiftCardsFromDB(userId as string);
-      sendResponse(res, {
-            statusCode: 200,
-            success: true,
-            message: 'Gift cards fetched successfully',
-            data: result,
-      });
-});
-
 const deleteGiftCard = catchAsync(async (req, res) => {
       const { id } = req.params;
       const result = await GiftCardService.deleteGiftCardFromDB(id);
@@ -93,7 +82,6 @@ export const GiftCardController = {
       getAllGiftCards,
       updateGiftCard,
       removePage,
-      getMyGiftCards,
       getGiftCardByUniqueId,
       deleteGiftCard,
       countGiftCards,

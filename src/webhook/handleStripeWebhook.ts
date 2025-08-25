@@ -14,7 +14,7 @@ const handlePaymentSuccess = async (session: Stripe.Checkout.Session) => {
       if (metadata?.paymentType === 'giftCard') {
             const claimToken = randomUUID();
             await Payment.create({
-                  userId: metadata?.userId,
+                  // userId: metadata?.userId,
                   giftCardId: metadata?.giftCardId,
                   paymentIntentId: session.payment_intent as string,
                   amount: (session.amount_total! / 100) as number,

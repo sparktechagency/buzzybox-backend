@@ -18,7 +18,7 @@ const createCheckoutSession = async (giftCardId: ObjectId) => {
             payment_method_types: ['card'],
             mode: 'payment',
             success_url: `${config.frontend_url}/create-gift/${giftCard.uniqueId}`,
-            cancel_url: `${config.frontend_url}`,
+            cancel_url: `${config.frontend_url}/create-gift/${giftCard.uniqueId}`,
             line_items: [
                   {
                         price: config.stripe_price_id,
@@ -125,7 +125,6 @@ const withdrawGiftCardFunds = async (payload: IPayment) => {
             throw new Error('Payment record not found');
       }
 
-      console.log(payment, 'from withdrawel');
       if (!payment.stripeConnectAccountId) {
             const connectAccountUrl = `${config.frontend_url}/connect/${payload.giftCardId}`;
             return {

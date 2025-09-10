@@ -14,7 +14,7 @@ app.use('/api/v1/stripe/webhook', express.raw({ type: 'application/json' }), han
 
 app.use(
       cors({
-            origin: ['https://thankyoupot.com', 'https://admin.thankyoupot.com'],
+            origin: ['https://thankyoupot.com', 'https://admin.thankyoupot.com', 'http://10.10.7.7:3000'],
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
             allowedHeaders: ['Content-Type', 'Authorization'],

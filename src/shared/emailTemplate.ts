@@ -6,7 +6,7 @@ const createAccount = (values: ICreateAccount) => {
             subject: 'Verify your account',
             html: `<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #000;">
     <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <img src="https://i.postimg.cc/TYrfyw3m/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
+        <img src="https://thankyoupot.com/images/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
           <h2 style="color: #277E16; font-size: 24px; margin-bottom: 20px;">Hey! ${values.name}, Your Thankyoupot Account Credentials</h2>
         <div style="text-align: center;">
             <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">Your single use code is:</p>
@@ -24,7 +24,7 @@ const resetOtp = (values: IResetPassword) => {
             subject: 'Here is your email resend otp',
             html: `<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #000;">
     <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <img src="https://i.postimg.cc/TYrfyw3m/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
+        <img src="https://thankyoupot.com/images/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
           <h2 style="color: #277E16; font-size: 24px; margin-bottom: 20px;">Hey! ${values.email}, Your Thankyoupot Account Credentials</h2>
         <div style="text-align: center;">
             <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">Your single use code is:</p>
@@ -43,7 +43,7 @@ const resetPassword = (values: IResetPassword) => {
             subject: 'Reset your password',
             html: `<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #555;">
     <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <img src="https://i.postimg.cc/TYrfyw3m/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
+        <img src="https://thankyoupot.com/images/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
         <div style="text-align: center;">
             <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">Your single use code is:</p>
             <div style="background-color: #277E16; width: 80px; padding: 10px; text-align: center; border-radius: 8px; color: #fff; font-size: 25px; letter-spacing: 2px; margin: 20px auto;">${values.otp}</div>
@@ -60,7 +60,7 @@ const contact = (values: IContact) => {
             subject: 'We’ve Received Your Message – Thank You!',
             html: `<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #555;">      
           <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-              <img src="https://i.postimg.cc/TYrfyw3m/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
+              <img src="https://thankyoupot.com/images/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
               <h2 style="color: #277E16; font-size: 24px; margin-bottom: 20px; text-align: center;">Thank You for Contacting Us, ${values.name}!</h2>
               
               <p style="color: #555; font-size: 16px; line-height: 1.5; text-align: center;">
@@ -96,7 +96,7 @@ const invite = (values: { email: string; name: string; message: string; link: st
             subject: "You've been invited to Thankyoupot!",
             html: `<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #000;">
         <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-          <img src="https://i.postimg.cc/TYrfyw3m/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width: 150px;" />
+          <img src="https://thankyoupot.com/images/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width: 150px;" />
           <h2 style="color: #000; font-size: 24px; margin-bottom: 20px;">Hey there,</h2>
           <div style="text-align: center;">
             <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">You’ve been invited by <strong>Thankyoupot</strong> to add a message to <strong>${
@@ -135,7 +135,7 @@ const sendGiftCardEmail = (values: { email: string; name: string; giftCardUrl: s
                   <!-- Logo -->
                   <tr>
                     <td align="center">
-                      <img src="https://i.postimg.cc/TYrfyw3m/logo.png" alt="Thankyoupot Logo" width="150" style="margin-bottom: 20px;">
+                      <img src="https://thankyoupot.com/images/logo.png" alt="Thankyoupot Logo" width="150" style="margin-bottom: 20px;">
                     </td>
                   </tr>
     

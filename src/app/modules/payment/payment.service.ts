@@ -45,7 +45,7 @@ const createContributionSession = async (payload: { giftCardId: ObjectId; amount
 
       const price = await stripe.prices.create({
             unit_amount: payload.amount * 100,
-            currency: 'usd',
+            currency: 'gbp',
             product_data: {
                   name: `Contribution to Gift Card ${giftCard.coverPage.title}`,
             },
@@ -142,7 +142,7 @@ const withdrawGiftCardFunds = async (payload: IPayment) => {
 
       const transfer = await stripe.transfers.create({
             amount: Math.floor(payment.totalContribution * 100), // in cents
-            currency: 'usd',
+            currency: 'gbp',
             destination: payment.stripeConnectAccountId,
             metadata: {
                   giftCardId: payload.giftCardId.toString(),

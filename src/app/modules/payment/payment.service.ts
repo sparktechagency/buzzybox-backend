@@ -140,8 +140,11 @@ const withdrawGiftCardFunds = async (payload: IPayment) => {
             throw new Error('No funds available to withdraw');
       }
 
+      // deduct 2.5% as platform fee
+      const partialAmount = payment.totalContribution - payment.totalContribution * (2.5 / 100);
+
       const transfer = await stripe.transfers.create({
-            amount: Math.floor(payment.totalContribution * 100), // in cents
+            amount: Math.round(partialAmount * 100), // in cents
             currency: 'usd',
             destination: payment.stripeConnectAccountId,
             metadata: {

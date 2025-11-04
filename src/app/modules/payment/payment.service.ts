@@ -101,7 +101,7 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
                   email: payload.email,
                   capabilities: {
                         transfers: { requested: true },
-                        card_payments: { requested: true },
+                        // card_payments: { requested: true },
                   },
             });
             console.log('------> passed: step 6');

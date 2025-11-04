@@ -91,6 +91,8 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
       // Check if Stripe Connect account is already saved
       let accountId = payment.stripeConnectAccountId;
 
+      console.log(accountId);
+
       if (!accountId) {
             console.log('------> passed: step 5');
             const account = await stripe.accounts.create({

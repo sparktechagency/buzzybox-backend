@@ -97,11 +97,18 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
             console.log('------> passed: step 5');
             const account = await stripe.accounts.create({
                   type: 'express',
-                  country: 'US',
+                  country: 'GB',
                   email: payload.email,
                   capabilities: {
                         transfers: { requested: true },
                         card_payments: { requested: true },
+                  },
+                  business_type: 'individual',
+                  individual: {
+                        email: payload.email,
+                  },
+                  business_profile: {
+                        url: `www.google.com`,
                   },
             });
             console.log('------> passed: step 6');

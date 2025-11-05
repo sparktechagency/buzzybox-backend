@@ -72,29 +72,22 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
       if (!payload.giftCardId) {
             throw new Error('Gift card ID is required');
       }
-      console.log('------> passed: step 1');
 
       const giftCard = await GiftCard.findById(payload.giftCardId);
       if (!giftCard) {
             throw new Error('Gift card not found');
       }
 
-      console.log('------> passed: step 2');
-
       // Find or create a related payment record
       let payment = await Payment.findOne({ giftCardId: payload.giftCardId });
-      console.log('------> passed: step 3');
       if (!payment) {
             payment = new Payment({ giftCardId: payload.giftCardId });
       }
-      console.log('------> passed: step 4');
+
       // Check if Stripe Connect account is already saved
       let accountId = payment.stripeConnectAccountId;
 
-      console.log(accountId);
-
       if (!accountId) {
-            console.log('------> passed: step 5');
             const account = await stripe.accounts.create({
                   type: 'express',
                   country: 'GB',
@@ -111,15 +104,12 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
                         url: `https://thankyoupot.com`,
                   },
             });
-            console.log('------> passed: step 6');
 
             accountId = account.id;
             payment.stripeConnectAccountId = accountId;
 
             await payment.save();
       }
-
-      console.log('------> passed: step 7');
 
       // Generate Stripe onboarding link
       const accountLink = await stripe.accountLinks.create({
@@ -128,8 +118,6 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
             return_url: `${config.frontend_url}/preview-gift/${giftCard.uniqueId}`,
             type: 'account_onboarding',
       });
-
-      console.log('------> passed: step 8');
 
       return accountLink.url;
 };

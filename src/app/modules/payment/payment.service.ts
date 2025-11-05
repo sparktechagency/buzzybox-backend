@@ -108,7 +108,7 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
                         email: payload.email,
                   },
                   business_profile: {
-                        url: `www.google.com`,
+                        url: `https://thankyoupot.com`,
                   },
             });
             console.log('------> passed: step 6');

@@ -152,7 +152,7 @@ const withdrawGiftCardFunds = async (payload: IPayment) => {
 
       const transfer = await stripe.transfers.create({
             amount: Math.round(partialAmount * 100), // in cents
-            currency: 'usd',
+            currency: 'gbp',
             destination: payment.stripeConnectAccountId,
             metadata: {
                   giftCardId: payload.giftCardId.toString(),

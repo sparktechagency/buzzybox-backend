@@ -74,6 +74,7 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
       }
 
       const giftCard = await GiftCard.findById(payload.giftCardId);
+      console.log('---->', giftCard);
       if (!giftCard) {
             throw new Error('Gift card not found');
       }
@@ -115,7 +116,7 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
       const accountLink = await stripe.accountLinks.create({
             account: accountId,
             refresh_url: `${config.frontend_url}/preview-gift/${giftCard.uniqueId}`,
-            return_url: `${config.frontend_url}`,
+            return_url: `${config.frontend_url}/preview-gift/${giftCard.uniqueId}`,
             type: 'account_onboarding',
       });
 

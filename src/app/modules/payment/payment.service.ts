@@ -115,7 +115,7 @@ const createRecipientWithdrawalLink = async (payload: { giftCardId: ObjectId; em
       const accountLink = await stripe.accountLinks.create({
             account: accountId,
             refresh_url: `${config.frontend_url}/preview-gift/${giftCard.uniqueId}`,
-            return_url: `${config.frontend_url}/preview-gift/${giftCard.uniqueId}`,
+            return_url: `${config.frontend_url}`,
             type: 'account_onboarding',
       });
 
